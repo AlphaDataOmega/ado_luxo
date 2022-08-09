@@ -106,8 +106,6 @@ function DAOForm() {
             <Form noValidate>
 
                 <Container className='business'>
-
-                    
                     <Row>
                         <Col></Col>
                         <Col sm="4">
@@ -122,7 +120,7 @@ function DAOForm() {
 
                     <hr></hr>
                     
-                    {/* <Form.Group className="mb-3" controlId="businessLogo">
+                    <Form.Group className="mb-3" controlId="businessLogo">
                         <Form.Label>Business Logo</Form.Label>
                         <Row>
                             <Col xs="10">
@@ -138,7 +136,7 @@ function DAOForm() {
                         <Form.Text>
                             {errors.business.logoFile && touched.business.logoFile ? (<div>{errors.business.logoFile}</div>) : null}
                         </Form.Text>
-                    </Form.Group> */}
+                    </Form.Group>
 
                     <Form.Group className="mb-3" controlId="business.name">
                         <Form.Label>Business Name</Form.Label>
