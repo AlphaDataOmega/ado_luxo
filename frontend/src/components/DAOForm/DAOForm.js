@@ -76,19 +76,21 @@ const initialValues = {
 
 function DAOForm() {
 
-    const [nftDoc, setIPFS_01] = useState('https://ipfs.com/gate-way/image/...');
-    const [businessLogoHash, setIPFS_02] = useState('https://ipfs.com/gate-way/image/...');
+    const [nftDoc, setIPFS_01] = useState('Upload your image to retrieve IPFS Hash...');
+    const [ipfsLogoHash, setIPFS_02] = useState('Upload your image to retrieve IPFS Hash...');
     const [disableAddress, setDisableAddress] = useState(true)
 
     async function ipfsUpload(file, setIPFS='' ) {
+        setIPFS_01("Loading...");
+        setIPFS_02("Loading...");
         let ipfs = await IPFS.create({repo: 'ok' + Math.random()})
         let data = await ipfs.add(file)
         if (setIPFS === '') {
             return data.cid
         } else if ( setIPFS === 'ipfs_01') {
-            setIPFS_01(`https://ipfs.com/gate-way/${data.cid}`)
+            setIPFS_01(data.cid)
         } else if ( setIPFS === 'ipfs_02') {
-            setIPFS_02(`https://ipfs.com/gate-way/${data.cid}`)
+            setIPFS_02(data.cid)
         }
     }
     
@@ -120,22 +122,39 @@ function DAOForm() {
 
                     <hr></hr>
                     
-                    <Form.Group className="mb-3" controlId="businessLogo">
+                    <Form.Group className="mb-3" controlId="business.logoFile">
                         <Form.Label>Business Logo</Form.Label>
                         <Row>
                             <Col xs="10">
-                                <Form.Control name="business.logoFile" required onChange={handleChange} type="file"/>
+                                <Form.Control
+                                    type="file"
+                                    name="business.logoFile"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    isInvalid={Object(errors.business).hasOwnProperty('logoFile') && Object(touched.business).hasOwnProperty('logoFile')}
+                                    isValid={!Object(errors.business).hasOwnProperty('logoFile') && Object(touched.business).hasOwnProperty('logoFile')}
+                                />
+                                <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid"><ErrorMessage name="business.logoFile"/></Form.Control.Feedback>
                             </Col>
                             <Col>
                                 <Button onClick={async()=>{ipfsUpload(values.business.logoFile, 'ipfs_02')}}>Upload Logo</Button> 
                             </Col>
                         </Row>
-                        <Form.Text className="text-muted">
-                            {businessLogoHash} 
-                        </Form.Text>
-                        <Form.Text>
-                            {errors.business.logoFile && touched.business.logoFile ? (<div>{errors.business.logoFile}</div>) : null}
-                        </Form.Text>
+
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="business.logoHash">
+                        <Form.Label>IPFS Logo Hash</Form.Label>
+                        <Form.Control
+                            type="text"
+                            disabled
+                            name="business.logoHash"
+                            value={ipfsLogoHash}
+                            isInvalid={Object(errors.business).hasOwnProperty('logoHash') && Object(touched.business).hasOwnProperty('logoHash')}
+                            isValid={!Object(errors.business).hasOwnProperty('logoHash') && Object(touched.business).hasOwnProperty('logoHash')}
+                        />
+                        <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid"><ErrorMessage name="business.logoHash"/></Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="business.name">
@@ -145,8 +164,8 @@ function DAOForm() {
                             name="business.name"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            isInvalid={Object(errors.business).hasOwnProperty('name')}
-                            isValid={Object(errors.business).hasOwnProperty('name') ? false : Object(touched.business).hasOwnProperty('name')}
+                            isInvalid={Object(errors.business).hasOwnProperty('name') && Object(touched.business).hasOwnProperty('name')}
+                            isValid={!Object(errors.business).hasOwnProperty('name') && Object(touched.business).hasOwnProperty('name')}
                         />
                         <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid"><ErrorMessage name="business.name"/></Form.Control.Feedback>
@@ -159,8 +178,8 @@ function DAOForm() {
                             name="business.description"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            isInvalid={Object(errors.business).hasOwnProperty('description')}
-                            isValid={Object(errors.business).hasOwnProperty('description') ? false : Object(touched.business).hasOwnProperty('description')}
+                            isInvalid={Object(errors.business).hasOwnProperty('description') && Object(touched.business).hasOwnProperty('description')}
+                            isValid={!Object(errors.business).hasOwnProperty('description') && Object(touched.business).hasOwnProperty('description')}
                         />
                         <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid"><ErrorMessage name="business.description"/></Form.Control.Feedback>
@@ -173,8 +192,8 @@ function DAOForm() {
                             name="business.email"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            isInvalid={Object(errors.business).hasOwnProperty('email')}
-                            isValid={Object(errors.business).hasOwnProperty('email') ? false : Object(touched.business).hasOwnProperty('email')}
+                            isInvalid={Object(errors.business).hasOwnProperty('email') && Object(touched.business).hasOwnProperty('email')}
+                            isValid={!Object(errors.business).hasOwnProperty('email') && Object(touched.business).hasOwnProperty('email')}
                         />
                         <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid"><ErrorMessage name="business.email"/></Form.Control.Feedback>
@@ -183,12 +202,12 @@ function DAOForm() {
                     <Form.Group className="mb-3" controlId="business.phone">
                         <Form.Label>Business Phone</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="phone"
                             name="business.phone"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            isInvalid={Object(errors.business).hasOwnProperty('phone')}
-                            isValid={Object(errors.business).hasOwnProperty('phone') ? false : Object(touched.business).hasOwnProperty('phone')}
+                            isInvalid={Object(errors.business).hasOwnProperty('phone') && Object(touched.business).hasOwnProperty('phone')}
+                            isValid={!Object(errors.business).hasOwnProperty('phone') && Object(touched.business).hasOwnProperty('phone')}
                         />
                         <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid"><ErrorMessage name="business.phone"/></Form.Control.Feedback>
@@ -196,7 +215,7 @@ function DAOForm() {
 
                     <Form.Group className="mb-3" controlId="businessLink">
                         <Form.Label>Business Links</Form.Label>
-                        {/* <BusinessLinks BusinessLinks={typeof values.business.links !== undefined ? values.business.links : []} handleChange={handleChange} handleBlur={handleBlur} errors={typeof errors.business !== undefined && typeof errors.business.links !== undefined ? errors.business.links : []} touched={typeof touched.business !== undefined && typeof touched.business.links !== undefined ? touched.business.links : []} ></BusinessLinks> */}
+                        <BusinessLinks BusinessLinks={values.business.links} handleChange={handleChange} handleBlur={handleBlur} errors={errors} touched={touched} ></BusinessLinks>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="addressSearch">
